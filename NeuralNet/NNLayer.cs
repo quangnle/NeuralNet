@@ -10,7 +10,7 @@ namespace NeuralNet
     {
         public int NumberOfNeurons { get; set; }
 
-        public double Bias { get; set; }
+        public double[] BiasWeights { get; set; }
 
         public double[] Input { get; set; }
 
@@ -22,18 +22,30 @@ namespace NeuralNet
 
         public NNLayer(int nInputs, int nNeurons)
         {
-            this.Bias = 0;
+            this.BiasWeights = new double[nNeurons];
             this.Delta = new double[nNeurons];
             this.Output = new double[nNeurons];
             this.Weights = new double[nInputs, nNeurons];
             this.NumberOfNeurons = nNeurons;
+
+            Random rnd = new Random();
+
+            for (int i = 0; i < nNeurons; i++)
+            {
+                BiasWeights[i] = rnd.NextDouble();
+                for (int j = 0; j < nInputs; j++)
+                {
+                    Weights[j, i] = rnd.NextDouble();
+                }
+            }
+
         }
 
         public void UpdateOutput()
         {   
             for (int i = 0; i < NumberOfNeurons; i++)
             {
-                var z = Bias;
+                var z = BiasWeights[i];
                 for (int j = 0; j < Input.Length; j++)
                 {
                     z += Input[j] * Weights[j, i];

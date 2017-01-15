@@ -27,15 +27,20 @@ namespace NeuralNet
             OutputLayer.Input = HiddenLayer.Output;
             OutputLayer.UpdateOutput();
 
-            // step 2: calculate errors for output layer
+            // step 2: comput errors for output layer
             for (int i = 0; i < OutputLayer.NumberOfNeurons; i++)
             {
                 OutputLayer.Delta[i] = OutputLayer.Output[i] * (1 - OutputLayer.Output[i]) * (target[i] - OutputLayer.Output[i]);
             }
 
             // step 3: update weights to output neurons
-
-            for (int i = 0; i < HiddenLayer.NumberOfNeurons; i++)
+            // step 3.1: update bias
+            for (int i = 0; i < OutputLayer.NumberOfNeurons; i++)
+            {
+                OutputLayer.BiasWeights[i] += _learningRate * OutputLayer.Delta[i];
+            }
+            // step 3.2: update weights
+            for (int i = 0; i < OutputLayer.Input.Length; i++)
             {
                 for (int j = 0; j < OutputLayer.NumberOfNeurons; j++)
                 {
@@ -43,7 +48,7 @@ namespace NeuralNet
                 }
             }
 
-            // step 4: calculate errors for hidden layer
+            // step 4: compute errors for hidden layer
             for (int i = 0; i < HiddenLayer.NumberOfNeurons; i++)
             {
                 var deriv = HiddenLayer.Output[i] * (1 - HiddenLayer.Output[i]);
@@ -56,7 +61,13 @@ namespace NeuralNet
             }
 
             // step 5: update weights for hidden layer
-            for (int i = 0; i < HiddenLayer.Input.Length; i++)
+            // step 5.1: update bias
+            for (int i = 0; i < HiddenLayer.NumberOfNeurons; i++)
+            {
+                HiddenLayer.BiasWeights[i] += _learningRate * HiddenLayer.Delta[i];
+            }
+            // step 5.2: update weights 
+            for (int i = 0; i < input.Length; i++)
             {
                 for (int j = 0; j < HiddenLayer.NumberOfNeurons; j++)
                 {
@@ -79,9 +90,9 @@ namespace NeuralNet
             }
         }
 
-        public double[] Predict(double[] inputs)
+        public double[] Predict(double[] input)
         {
-            HiddenLayer.Input = inputs;
+            HiddenLayer.Input = input;
             HiddenLayer.UpdateOutput();
             OutputLayer.Input = HiddenLayer.Output;
             OutputLayer.UpdateOutput();
