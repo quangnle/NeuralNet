@@ -28,14 +28,13 @@ namespace NeuralNet
             this.Weights = new double[nInputs, nNeurons];
             this.NumberOfNeurons = nNeurons;
 
-            Random rnd = new Random();
-
+            // initialize weights
             for (int i = 0; i < nNeurons; i++)
             {
-                BiasWeights[i] = rnd.NextDouble();
+                BiasWeights[i] = ANN.Rand();
                 for (int j = 0; j < nInputs; j++)
                 {
-                    Weights[j, i] = rnd.NextDouble();
+                    Weights[j, i] = ANN.Rand();
                 }
             }
 

@@ -8,6 +8,8 @@ namespace NeuralNet
 {
     public class ANN
     {
+        private static Random _rnd = new Random();
+
         private double _learningRate;
         public NNLayer HiddenLayer { get; set; }
         public NNLayer OutputLayer { get; set; }
@@ -17,6 +19,11 @@ namespace NeuralNet
             HiddenLayer = new NNLayer(nInput, nHidden);
             OutputLayer = new NNLayer(nHidden, nOutput);
             _learningRate = learnRate;
+        }
+
+        public static double Rand()
+        {
+            return _rnd.NextDouble();
         }
 
         private void TrainOnce(double[] input, double[] target)
@@ -52,12 +59,12 @@ namespace NeuralNet
             for (int i = 0; i < HiddenLayer.NumberOfNeurons; i++)
             {
                 var deriv = HiddenLayer.Output[i] * (1 - HiddenLayer.Output[i]);
-                var delta = 0.0;
+                var sumDeltas = 0.0;
                 for (int j = 0; j < OutputLayer.NumberOfNeurons; j++)
                 {
-                    delta += OutputLayer.Delta[j] * OutputLayer.Weights[i, j];
+                    sumDeltas += OutputLayer.Delta[j] * OutputLayer.Weights[i, j];
                 }
-                HiddenLayer.Delta[i] = delta * deriv;
+                HiddenLayer.Delta[i] = sumDeltas * deriv;
             }
 
             // step 5: update weights for hidden layer
