@@ -34,6 +34,14 @@ namespace NeuralNet
             OutputLayer.Input = HiddenLayer.Output;
             OutputLayer.UpdateOutput();
 
+            //// step 1.1: compute overall error
+            //var error = 0.0;
+            //for (int i = 0; i < OutputLayer.NumberOfNeurons; i++)
+            //{
+            //    error += target[i] - OutputLayer.Output[i];
+            //}
+            //Console.WriteLine("Error: " + error);
+
             // step 2: comput errors for output layer
             for (int i = 0; i < OutputLayer.NumberOfNeurons; i++)
             {
@@ -78,23 +86,25 @@ namespace NeuralNet
             {
                 for (int j = 0; j < HiddenLayer.NumberOfNeurons; j++)
                 {
-                    HiddenLayer.Weights[i, j] += _learningRate * HiddenLayer.Delta[i] * input[j];
+                    HiddenLayer.Weights[i, j] += _learningRate * HiddenLayer.Delta[j] * input[i];
                 }
             }
         }
 
         public void Train(List<Tuple<double[], double[]>> traindata, int times)
         {
-            for (int i = 0; i < times; i++)
+            int epoch = 0;
+        Retry:
+            epoch++;
+            for (int j = 0; j < traindata.Count; j++)
             {
-                for (int j = 0; j < traindata.Count; j++)
-                {
-                    var input = traindata[j].Item1;
-                    var target = traindata[j].Item2;
+                var input = traindata[j].Item1;
+                var target = traindata[j].Item2;
 
-                    TrainOnce(input, target);
-                }
+                TrainOnce(input, target);
             }
+            if (epoch < times) goto Retry;
+            
         }
 
         public double[] Predict(double[] input)

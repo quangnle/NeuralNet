@@ -28,9 +28,9 @@ namespace NeuralNet
 
             data.Add(item1); data.Add(item2); data.Add(item3); data.Add(item4);
 
-            ANN n = new ANN(2, 2, 1, 0.1);
+            ANN n = new ANN(2, 2, 1, 1.0);
 
-            n.Train(data, 100);
+            n.Train(data, 2000);
 
             var predict = n.Predict(x1);
             Console.WriteLine(predict[0]);
